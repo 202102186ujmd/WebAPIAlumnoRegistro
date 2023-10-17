@@ -22,5 +22,12 @@ namespace WebAPIAlumnoRegistro.Controllers
         {
             return Ok(UsuarioRepository.GetAll());
         }
+
+        [HttpGet("APIKey")]
+        public ActionResult GetAPIKey()
+        {
+            var MiApiKeyToken = Guid.NewGuid().ToString();
+            return Ok(MiApiKeyToken);
+        }
     }
 }
