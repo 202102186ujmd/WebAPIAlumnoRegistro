@@ -10,9 +10,14 @@ namespace WebAPIAlumnoRegistro.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioRepository UsuarioRepository;
-        public UsuarioController(IUsuarioRepository usuarioRepository)
+
+        //insertar en NLog
+        private readonly ILogger<UsuarioController> _logger;
+
+        public UsuarioController(IUsuarioRepository usuarioRepository, ILogger<UsuarioController> logger)
         {
             this.UsuarioRepository = usuarioRepository;
+            this._logger = logger;
         }
 
 
@@ -22,6 +27,23 @@ namespace WebAPIAlumnoRegistro.Controllers
         {
             return Ok(UsuarioRepository.GetAll());
         }
+
+        [HttpGet("GetbyEmail")]
+        public ActionResult GetbyEmail(string email)
+        {
+            if(string.IsNullOrEmpty(email))
+            {
+                _logger.LogError("El email no fue enviado");
+                return BadRequest("El email no puede ser nulo");
+            }
+            else
+            {
+                return Ok(UsuarioRepository.GetbyEmail(email));
+            }
+        }
+
+
+
 
         [HttpGet("APIKey")]
         public ActionResult GetAPIKey()
