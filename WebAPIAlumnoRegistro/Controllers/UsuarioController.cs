@@ -36,10 +36,8 @@ namespace WebAPIAlumnoRegistro.Controllers
                 _logger.LogError("El email no fue enviado");
                 return BadRequest("El email no puede ser nulo");
             }
-            else
-            {
-                return Ok(UsuarioRepository.GetbyEmail(email));
-            }
+            _logger.LogInformation("El email fue enviado");
+            return Ok(email);
         }
 
 
