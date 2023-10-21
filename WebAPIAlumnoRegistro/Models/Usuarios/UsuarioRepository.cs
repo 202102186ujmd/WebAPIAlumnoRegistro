@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPIAlumnoRegistro.Controllers;
 
 namespace WebAPIAlumnoRegistro.Models.Usuarios
 {
@@ -7,10 +8,13 @@ namespace WebAPIAlumnoRegistro.Models.Usuarios
 
         #region Inyectar el DBContext
         private readonly DBContextRegistro Db;
+        //insertar en NLog
+        private readonly ILogger<UsuarioRepository> _logger;
 
-        public UsuarioRepository(DBContextRegistro db)
+        public UsuarioRepository(DBContextRegistro db, ILogger<UsuarioRepository> logger)
         {
             this.Db = db;
+            this._logger = logger;
         }
         #endregion
 
@@ -21,15 +25,23 @@ namespace WebAPIAlumnoRegistro.Models.Usuarios
 
         public Usuario GetbyEmail(String email)
         {
-            var usuariobyemail = Db.Usuario.Where(s => s.Email == email).FirstOrDefault();
-            if (usuariobyemail != null)
+            try
             {
-                return usuariobyemail;
+                var usuariobyemail = Db.Usuario.Where(s => s.Email == email).FirstOrDefault();
+                if (usuariobyemail != null)
+                {
+                    return usuariobyemail;
+                }
+                else
+                {
+                    return new Usuario();
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return new Usuario();
+                _logger.LogError(ex,ex.Message);
             }
+            return new Usuario();
         }
 
         public bool Login(Usuario usuario)
